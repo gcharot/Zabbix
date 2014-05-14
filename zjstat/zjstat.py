@@ -1,7 +1,19 @@
 #!/usr/bin/python
+
+""" Return number of java process matching user's input and send memory stats via zabbix_sender """
+
 import subprocess
 import sys
 import os
+
+__author__ = "Gregory Charot"
+__copyright__ = "Copyright 2014, Gregory Charot"
+__license__ = "GPL"
+__version__ = "1.0.1"
+__maintainer__ = "Gregory Charot"
+__email__ = "gregory.charot@gmail.com"
+__status__ = "Production"
+
 
 ### USER CONFIGURABLE PARAMETERS
 
@@ -13,15 +25,15 @@ jstat = '/usr/java/default/bin/jstat'
 zabbix_key = 'custom.proc.java'						# Zabbix key root - Full key is zabbix_key.process_name[metric]
 zabbix_sender = "/usr/bin/zabbix_sender"			# Path to zabbix_sender binary
 zabbix_conf = "/etc/zabbix/zabbix_agentd.conf"		# Path to Zabbix agent configuration
-send_to_zabbix = 1									# Send data to zabbix ? > 0 is yes / 0 is No + debug output
+send_to_zabbix = 1									# Send data to zabbix ? > 0 is yes / 0 is No + debug output. Used for memory stats only
 
 
 def usage():
 	"""Display program usage"""
 
-	print "\nUsage : ", sys.argv[0], " process_name alive|mem|all"
+	print "\nUsage : ", sys.argv[0], " process_name alive|all"
 	print "process_name : java process name as seen in jps output"
-	print "Modes : \n\talive : Return number of running process\n\tmem : Send memory stats\n\tall : Do both"
+	print "Modes : \n\talive : Return number of running processs\n\tall : Send memory stats as well"
 	sys.exit(1)
 
 
@@ -124,11 +136,11 @@ class Jprocess:
 
 
 
-# List of accepted mode --- alive : Return number of running process - mem : Send memory stats - all : Do both"
+# List of accepted mode --- alive : Return number of running process - all : Send mem stats as well
 
-accepted_modes = ['alive', 'mem', 'all']
+accepted_modes = ['alive', 'all']
 
-# Check args
+# Check/initialize args
 
 if len(sys.argv) == 3 and sys.argv[2] in accepted_modes:
 	procname = sys.argv[1]
@@ -141,22 +153,16 @@ else:
 jproc = Jprocess(procname) 
 jproc.chk_proc()
 
-# If mode is alive or all - print number of process found
-if mode == "alive" or mode == "all":
-		print jproc.pdict["nproc"]
-		if send_to_zabbix == 0: print "There is ", jproc.pdict['nproc'], "running process named", jproc.pdict['jpname']
-# If mem only print 0
-else:
-		print "0"
+# Print number of process found
+print jproc.pdict["nproc"]
+if send_to_zabbix == 0: print "There is ", jproc.pdict['nproc'], "running process named", jproc.pdict['jpname']
 
-# If mode is mem or all - Get memory stats and send them to zabbix.
-if mode == "mem" or mode == "all":
-	jproc.get_jstats()
-	jproc.compute_jstats()
+# If mode is all - Get memory stats and send them to zabbix.
+if mode == "all":
+	jproc.get_jstats()					# Get values from jstat
+	jproc.compute_jstats()				# Compute stats that will be sent to zabbix
 	FNULL = open(os.devnull, 'w')		# Open devnull to redirect zabbix_sender output
 	for key in jproc.zdict:
-		jproc.send_to_zabbix(key)
-		# print key, jproc.zdict[key]
-		# print "Zkey = ", zabbix_key  + '.' + jproc.pdict['jpname'].lower() + "[" + key + "]"
+		jproc.send_to_zabbix(key)		# Send data to zabbix
 	FNULL.close()
 
