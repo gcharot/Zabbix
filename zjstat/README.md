@@ -61,7 +61,7 @@ There is a minimal configuration check required, open the zjstat.py and double c
 
 Best way to start using zjstats is to use command line.  
 ```
-Usage :  /usr/local/scripts/zabbix/zjstat.py  process_name alive|all
+Usage : zjstat.py  process_name alive|all
 process_name : java process name as seen in jps output
 Modes :
         alive : Return number of running processs
@@ -70,7 +70,7 @@ Modes :
 
 zjstat requires two arguments, the process name as shown by jps and the mode which defines if you want to return the number of matching processes (alive) or send memory stats as well (all).
 
-"alive" only print the number of process found which is handy for zabbix monitoring, "all" does the same thing but also send memory stat through zabbix_sender.
+"alive" only prints the number of process found which is handy for zabbix monitoring, "all" does the same thing but also send memory stat through zabbix_sender.
 
 Let's say you have the following jps output :
 
@@ -82,13 +82,13 @@ Let's say you have the following jps output :
 If you want zjstat to return number of elsaticsearch process you would type : 
 
 ```
-./zjstat.py Elasticsearch alive
+# ./zjstat.py Elasticsearch alive
 1
 ```
 
-1 is printed as only one Elasticsearch process is running. This value will then be return to zabbix.
+"1" is printed as only one Elasticsearch process is running. This value will then be return to zabbix.
 
-In order to avoid output garbage, zjstat silently send memory stats to zabbix; if you want to check the memory features locally you will need to set send_to_zabbix to 0 (see )
+In order to avoid output garbage, zjstat silently send memory stats to zabbix; if you want to check the memory features locally you will need to set send_to_zabbix variable to 0 (see ) [I'm a reference-style link][Pre-run configuration chek]
 
 ### TODO 
 
