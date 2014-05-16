@@ -3,7 +3,7 @@
 
 zjstat - Return number of java process matching user's input and send memory stats via zabbix_sender
 
-Zjstat is zabbix probe that checks the number of java process running and optionally, send process JVM details (heap size and perm gen). 
+Zjstat is zabbix probe that checks the number of java process running and optionally sends process JVM details (heap size and perm gen). 
 
 ## WHY
 
@@ -58,7 +58,35 @@ There is a minimal configuration check required, open the zjstat.py and double c
 
 #### Command line
 
-Best way to start using zjstats is to use command line.
+Best way to start using zjstats is to use command line.  
+```
+Usage :  /usr/local/scripts/zabbix/zjstat.py  process_name alive|all
+process_name : java process name as seen in jps output
+Modes :
+        alive : Return number of running processs
+        all : Send memory stats as well
+```
+
+zjstat requires two arguments, the process name as shown by jps and the mode which defines if you want to return the number of matching processes (alive) or send memory stats as well (all).
+
+"alive" only print the number of process found which is handy for zabbix monitoring, "all" does the same thing but also send memory stat through zabbix_sender.
+
+Let's say you have the following jps output :
+
+```
+# jps
+64422 Elasticsearch
+```
+
+If you want zjstat to return number of elsaticsearch process you would type : 
+
+```
+./zjstat.py Elasticsearch alive
+1
+```
+
+1 is printed as only one Elasticsearch process is running.
+
 
 
 ### TODO 
@@ -70,8 +98,6 @@ What is monitored
 key
 
 intergration to zabbix
-
-req : sudo + jstat + jps
 
 how to zabbix
 
