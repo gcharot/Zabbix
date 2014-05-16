@@ -55,6 +55,7 @@ There is a minimal configuration check required, open the zjstat.py and double c
 * jstat
 * zabbix_sender (only for sending memory stats)
 * zabbix agent configuration file (only for sending memory stats)
+* send_to_zabbix : This values defines if memory stats are sent to zabbix through zabbix_sender. A value of 0 will disable zabbix_sender and also print debug output. Very handy for testing. A value > 0 will send stats to zabbix and disable debug output.
 
 #### Command line
 
@@ -85,9 +86,9 @@ If you want zjstat to return number of elsaticsearch process you would type :
 1
 ```
 
-1 is printed as only one Elasticsearch process is running.
+1 is printed as only one Elasticsearch process is running. This value will then be return to zabbix.
 
-
+In order to avoid output garbage, zjstat silently send memory stats to zabbix; if you want to check the memory features locally you will need to set send_to_zabbix to 0 (see )
 
 ### TODO 
 
