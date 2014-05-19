@@ -40,9 +40,9 @@ If you want to return more stats, you can easily add your own data, see the Cust
 ## Limitations / TODO
 
 * No regular expression, process name __must__ mach the name as returned by jps
-* If more than one java process is found, memory stats will only be sent for the last process found (last process listed by jps).
+* If more than one matching java process is found, memory stats will only be sent for the last process found (last process listed by jps).
 * Zabbix support only
-* Heap / PermGen stats only
+* Heap / PermGen stats only. See  [I need more memory stats](/zjstat#i-need-more-memory-stats) section for adding more stats.
 * As JAVA_HOME might no be always defined, system commands path are configured statically inside the code
 
 ## Requirements
@@ -246,15 +246,15 @@ Finally you can create graphs and screens (see [Zabbix template](/zjstat/zabbix 
 
 Heap and PermGen are not enough ? No problem, you can easily add you own stat with minimal knowledge in python !
 
-zjstat gathers memory values from jstat command, each time you request memory stats a python dictionary is created with the values return by :
+zjstat gathers memory values from the jstat command, each time you request memory stats a python dictionary is created with the values return by :
 ```
 jstat -gc PID
 jstat -gccapacity PID
 ```
 
-The diffents values are explained in the [Oracle documentation](http://docs.oracle.com/javase/1.5.0/docs/tooldocs/share/jstat.html). The collected data are put in a python dictionary called "pdict", this dictionary keeps the same keys => value as jstat which means if you need to get the "Total garbage collection time" (GCT), you can access it with :
+The diffents values are explained in the [jstat documentation](http://docs.oracle.com/javase/1.5.0/docs/tooldocs/share/jstat.html). The collected data are put in a python dictionary called "pdict", this dictionary keeps the same keys => value as jstat which means if you need to get the "Total garbage collection time" (GCT), you can access it with :
 
-		self.zdict['heap_max'] = round(((float(self.pdict['NGCMX']) + float(self.pdict['OGCMX'])) * 1024),2)
+
 ```python
 self.pdict['GCT']
 ```
@@ -269,8 +269,14 @@ If you want to return Suvivor Space utilization (S0U + S1U) you would add :
 self.zdict['survivor_used'] = round(((float(self.pdict['S0U']) + float(self.pdict['S1U'])) * 1024),2)
 ```
 
+To test your patch, set send_to_zabbix variable to 0 and run zjstat, check the zabbix stat dictionary dump values, you should see your new value and the corresponding zabbix_sender command.
 
+Last thing to do is create a zabbix item to store the data, in the example above we would create two zabbix trapper items with the following keys :
 
+* custom.proc.java.processname[total_gb_time] : for the Total garbage collection time
+* custom.proc.java.processname[survivor_used] : for the Suvivor Space utilization
+
+That's all !
 
 ## TODO 
 
