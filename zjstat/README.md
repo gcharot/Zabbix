@@ -183,7 +183,7 @@ From the example above you can see that there is 1 "Elasticsearch" "process runn
 
 To monitor the number of process through zabbix you need to add a new zabbix item with the following properties :
 
-![alt text][images/zabbix_java_process_item.png "Zabbix item configuration"]
+![alt text](/images/zabbix_java_process_item.png?raw=true  "Zabbix item configuration")
 
 ## TODO 
 
