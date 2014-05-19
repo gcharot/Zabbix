@@ -158,13 +158,32 @@ For every process you would like to monitor, you need to ask yourself if you wan
 
 First thing to do is to configure zabbix agent so it can be called from zabbix server.
 
-Create a /etc/zabbix/zabbix_agentd.d/jstat.conf file and add the following line (assuming zjstat is in /usr/local/bin) :
+Create a /etc/zabbix/zabbix_agentd.d/jstat.conf file and add the following line (assuming zjstat is in /usr/local/bin/) or get the jstat.conf from github:
 
 ```
 UserParameter=custom.proc.num.java[*],/usr/local/bin/zjstat.py $1 $2
 ```
 
+You can of course set whatever zabbix key you like, default is "custom.proc.num.java"
 
+Then restart zabbix agent. You can test your configuration from your zabbix server with the zabbix_get command :
+```
+$ zabbix_get -s  hostname  -k custom.proc.num.java[Elasticsearch,alive]
+1
+
+$ zabbix_get -s  hostname  -k custom.proc.num.java[blablabla,alive]
+0
+```
+
+From the example above you can see that there is 1 "Elasticsearch" "process running and 0 "blablabla" process.
+
+### Zabbix server configuration
+
+#### Number of process running
+
+To monitor the number of process through zabbix you need to add a new zabbix item with the following properties :
+
+![alt text](https://github.com/gcharot/Zabbix/blob/master/zjstat/images/zabbix_java_process_item.png "Zabbix item configuration")
 
 ## TODO 
 
