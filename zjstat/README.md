@@ -13,9 +13,9 @@ By default zabbix offers the proc.num check unfortunately this check is based on
 zjstat uses only system command, there is nothing to install apart from the java utilities.
 
 
-### WHAT CAN I DO
+## WHAT CAN I DO
 
-#### Number of process running
+### Number of process running
 
 zjstat default feature is to return the number of java process matching the user input. The process must match the name returned by jps :
 ```
@@ -25,7 +25,7 @@ zjstat default feature is to return the number of java process matching the user
 
 In this case the process name is Elasticsearch
 
-#### Memory stat
+### Memory stat
 
 zjstat can also return memory statistics :
 * HEAP MAX
@@ -37,7 +37,7 @@ Memory stats are send through zabbix_sender in order to make sure all data are s
 If you want to return more stats, you can easily add your own data, see the Customization chapter.
 
 
-### Requirements
+## Requirements
 
 There is no fancy requirements, only core system tools are required :
 
@@ -46,9 +46,9 @@ There is no fancy requirements, only core system tools are required :
 * jstat
 * zabbix_sender (only for sending memory stats)
 
-### USAGE
+## USAGE
 
-#### Pre-run configuration chek
+### Pre-run configuration chek
 
 There is a minimal configuration check required, open the zjstat.py and double check the "USER CONFIGURABLE PARAMETERS" section (line 18), you should ensure the following paths are corect : 
 * jps
@@ -57,7 +57,7 @@ There is a minimal configuration check required, open the zjstat.py and double c
 * zabbix agent configuration file (only for sending memory stats)
 * send_to_zabbix : This values defines if memory stats are sent to zabbix through zabbix_sender. A value of 0 will disable zabbix_sender and also print debug output. Very handy for testing. A value > 0 will send stats to zabbix and disable debug output.
 
-#### Command line
+### Command line
 
 Best way to start using zjstats is to use command line.  
 ```
@@ -91,7 +91,7 @@ If you want zjstat to return number of elsaticsearch process you would type :
 In order to avoid output garbage, zjstat silently send memory stats to zabbix; if you want to check the memory features locally you will need to set send_to_zabbix variable to 0 (see "Pre-run configuration chek" section). Then use the following command line : 
 
 ```
-./zjstat.py Elasticsearch all
+# ./zjstat.py Elasticsearch all
 Process found : Elasticsearch with pid : 64422
 1
 There is  1 running process named Elasticsearch
@@ -121,7 +121,7 @@ Simulation: the following command would be execucted :
 /usr/bin/zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k custom.proc.java.elasticsearch[heap_used] -o 11426342400.0
 ```
 
-As you can see, setting send_to_zabbix to 0 added debug output, the "all" option also enabled memory reporting. The output is splitted in 4 section : 
+As you can see, setting send_to_zabbix to 0 added debug output, the "all" option also enabled memory reporting. The output is splitted in 4 sections : 
 
 * The first section shows if process(es) matching user input are running on the system
 * The second section shows the commands used to get memory statistics
@@ -133,7 +133,11 @@ BE AWARE that the "collected stat dictionary" values are in KB (as reported by j
 
 If you're happy with the result, you can set send_to_zabbix back to 1 and proceed with zabbix integration !
 
-### TODO 
+
+## Zabbix integration
+
+
+## TODO 
 
 Limitation
 
