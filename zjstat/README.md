@@ -175,7 +175,7 @@ $ zabbix_get -s  hostname  -k custom.proc.num.java[blablabla,alive]
 0
 ```
 
-From the example above you can see that there is 1 "Elasticsearch" "process running and 0 "blablabla" process.
+From the example above you can see that there is 1 "Elasticsearch" process running and 0 "blablabla" process.
 
 ### Zabbix server configuration
 
@@ -183,9 +183,9 @@ For a quick start-up use the ElasticSearch [Zabbix template](/zjstat/zabbix temp
 
 #### Number of process running
 
-To monitor the number of process through zabbix you need to add a new zabbix item with the following properties :
+To monitor the number of process through Zabbix you need to add a new zabbix item with the following properties :
 
-![alt text](/zjstat/images/zabbix_java_process_item.png  "zjstat item configuration")
+![alt text](/zjstat/images/zabbix_java_process_item_alive.png  "zjstat item configuration")
 
 You can add this item on a template (recommended) or directly on the host to monitor.
 
@@ -193,7 +193,15 @@ Next thing is to create a trigger based on this item :
 
 ![alt text](/zjstat/images/zabbix_java_process_trigger.png  "zjstat trigger configuration")
 
-From now on a high severity alert will be triggered if the number of elasticsearch process is now equal to 1.
+From now on a high severity alert will be triggered if the number of elasticsearch process is not equal to 1.
+
+### Memory
+
+Memory stats are sent through zabbix_sender after the number of process have been returned. You also need to change the __mode from alive to all__
+
+Change the zabbix item defined above so it include the "all" switch :
+
+![alt text](/zjstat/images/zabbix_java_process_item_all.png  "zjstat item configuration")
 
 
 ## TODO 
