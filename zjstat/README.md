@@ -42,8 +42,8 @@ If you want to return more stats, you can easily add your own data, see the Cust
 * No regular expression, process name __must__ mach the name as returned by jps
 * If more than one matching java process is found, memory stats will only be sent for the last process found (last process listed by jps).
 * Zabbix support only
-* Heap / PermGen stats only. See  [I need more memory stats](/zjstat#i-need-more-memory-stats) section for adding more stats.
-* As JAVA_HOME might no be always defined, system commands path are configured statically inside the code
+* Heap / PermGen stats only. See  [I need more memory stats](#i-need-more-memory-stats) section for adding more stats.
+* As JAVA_HOME might not be always defined, system commands path are configured statically inside the code
 
 ## Requirements
 
