@@ -65,7 +65,7 @@ There is a minimal configuration check required, open the zjstat.py and double c
 * zabbix_sender (only for sending memory stats)
 * zabbix agent configuration file (only for sending memory stats)
 * send_to_zabbix : This values defines if memory stats are sent to zabbix through zabbix_sender. A value of 0 will disable zabbix_sender and also print debug output. Very handy for testing. A value > 0 will send stats to zabbix and disable debug output.
-* Add execution permission on zjstat.py file (at least for user root and zabbix)
+* Add execution permission on zjstat.py file (at least for users root and zabbix)
 
 ### Command line
 
@@ -160,7 +160,7 @@ For every process you want to monitor, you need to ask yourself if you want to m
 ### Requirements
 
 * User zabbix is able to sudo jps as root without password + "!requiretty" parameter
-* User zabbix is able to sudo jstat as root without password "!requiretty" parameter (memory stats only)
+* User zabbix is able to sudo jstat as root without password + "!requiretty" parameter (memory stats only)
 * Host is able to send data to zabbix through zabbix_serder (zabbix trapper)
 
 ### Zabbix agent configuration
@@ -252,7 +252,7 @@ jstat -gc PID
 jstat -gccapacity PID
 ```
 
-The diffents values are explained in the [jstat documentation](http://docs.oracle.com/javase/1.5.0/docs/tooldocs/share/jstat.html). The collected data are put in a python dictionary called "pdict", this dictionary keeps the same keys => value as jstat which means if you need to get the "Total garbage collection time" (GCT), you can access it with :
+The diffent values are explained in the [jstat documentation](http://docs.oracle.com/javase/1.5.0/docs/tooldocs/share/jstat.html). The collected data are put in a python dictionary called "pdict", this dictionary keeps the same keys => value as jstat which means if you need to get the "Total garbage collection time" (GCT), you can access it with :
 
 
 ```python
@@ -261,13 +261,15 @@ self.pdict['GCT']
 
 This being said, all values sent to zabbix are stored in a different dictionnary called "zdict", if you want to send "Total garbage collection time" to Zabbix you need to add the following line in the "compute_jstats" method.
 ```python
-self.zdict['total_gb_time'] = round(float(self.pdict['GCT']) * 1024,2)
+self.zdict['total_gb_time'] = round(float(self.pdict['GCT']),2)
 ```
 
 If you want to return Suvivor Space utilization (S0U + S1U) you would add :
 ```python
 self.zdict['survivor_used'] = round(((float(self.pdict['S0U']) + float(self.pdict['S1U'])) * 1024),2)
 ```
+
+* 1024 is to convert KBytes in Bytes, the round(...,2) is to keep only 2 digits after the comma.
 
 To test your patch, set send_to_zabbix variable to 0 and run zjstat, check the zabbix stat dictionary dump values, you should see your new value and the corresponding zabbix_sender command.
 
@@ -278,15 +280,3 @@ Last thing to do is create a zabbix item to store the data, in the example above
 
 That's all !
 
-## TODO 
-
-Limitation
-
-
-key
-
-intergration to zabbix
-
-how to zabbix
-
-variable configuration
