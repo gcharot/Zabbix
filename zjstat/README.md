@@ -150,13 +150,19 @@ For every process you would like to monitor, you need to ask yourself if you wan
 
 ### Requirements
 
-
 * User zabbix is able to sudo jps as root without password
 * User zabbix is able to sudo jstat as root without password (memory stats only)
 * Host is able to send data to zabbix through zabbix_serder (zabbix trapper)
 
 ### Zabbix agent configuration
 
+First thing to do is to configure zabbix agent so it can be called from zabbix server.
+
+Create a /etc/zabbix/zabbix_agentd.d/jstat.conf file and add the following line (assuming zjstat is in /usr/local/bin) :
+
+```
+UserParameter=custom.proc.num.java[*],/usr/local/bin/zjstat.py $1 $2
+```
 
 
 
