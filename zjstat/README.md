@@ -185,7 +185,7 @@ For a quick start-up use the ElasticSearch [Zabbix template](/zjstat/zabbix temp
 
 To monitor the number of process through Zabbix you need to add a new zabbix item with the following properties :
 
-![alt text](/zjstat/images/zabbix_java_process_item_all.png  "zjstat item configuration")
+![alt text](/zjstat/images/zabbix_java_process_item_alive.png  "zjstat item configuration")
 
 You can add this item on a template (recommended) or directly on the host to monitor.
 
@@ -197,7 +197,7 @@ From now on a high severity alert will be triggered if the number of elasticsear
 
 ### Memory stats
 
-Memory stats are sent through zabbix_sender after the number of process have been returned. To enable memory stats, you need to change the __mode from alive to all__
+Memory stats are sent through zabbix_sender after the number of process have been returned. To enable memory stats, you need to change the __mode from "alive" to "all"__
 
 Change the zabbix item defined above so it include the "all" switch :
 
@@ -227,6 +227,10 @@ At the end your 5 items should look like :
 
 ![alt text](/zjstat/images/zabbix_java_process_items.png  "zjstat items list")
 
+
+Finally you can create graphs and screens (see [Zabbix template](/zjstat/zabbix template/zbx_template_elastisearch.xml)) : 
+
+![alt text](/zjstat/images/zabbix_java_process_trigger.png  "JVM Memory Stats")
 
 
 
