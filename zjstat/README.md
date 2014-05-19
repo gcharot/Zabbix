@@ -206,7 +206,7 @@ From now on a high severity alert will be triggered if the number of elasticsear
 
 ### Memory stats
 
-Memory stats are sent through zabbix_sender after the number of process have been returned. To enable memory stats, you need to change the __mode from "alive" to "all"__
+Memory stats are sent through zabbix_sender after the number of process have been returned. To enable memory stats, you need to change the __mode from "alive" to "all"__.
 
 Change the zabbix item defined above so it include the "all" switch :
 
@@ -225,7 +225,7 @@ This time keys are based on the following convention :
 custom.proc.java.processname[metric]
 ```
 
-For example the elasticsearch heap used key is :
+For example, the elasticsearch heap used key is :
 ```
 custom.proc.java.elasticsearch[heap_used]
 ```
