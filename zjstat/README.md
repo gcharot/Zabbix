@@ -183,7 +183,16 @@ From the example above you can see that there is 1 "Elasticsearch" "process runn
 
 To monitor the number of process through zabbix you need to add a new zabbix item with the following properties :
 
-![alt text](/zjstat/images/zabbix_java_process_item.png  "Zabbix item configuration")
+![alt text](/zjstat/images/zabbix_java_process_item.png  "zjstat item configuration")
+
+You can add this item on a template (recommended) or directly on the host to monitor.
+
+Next thing is to create a trigger based on this item :
+
+![alt text](/zjstat/images/zabbix_java_process_trigger.png  "zjstat trigger configuration")
+
+From now on a high severity alert will be triggered if the number of elasticsearch process is now equal to 1.
+
 
 ## TODO 
 
