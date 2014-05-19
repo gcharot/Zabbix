@@ -179,7 +179,7 @@ From the example above you can see that there is 1 "Elasticsearch" "process runn
 
 ### Zabbix server configuration
 
-For a quick start-up use the example Zabbix template 
+For a quick start-up use the ElasticSearch [Zabbix template](/zjstat/zabbix template/zbx_template_elastisearch.xml) and adapt it to your needs.
 
 #### Number of process running
 
