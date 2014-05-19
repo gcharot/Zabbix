@@ -10,7 +10,7 @@ Zjstat is zabbix probe that checks the number of java process running and option
 
 By default zabbix offers the proc.num check unfortunately this check is based on the process command line which is not very convinient for java processes. Concerning java process memory monitoring, this requires a JMX interface which is not necessarily supported by all program or very contraignant to deploy.
 
-zjstat uses only system command, there is nothing to install apart from the java utilities.
+zjstat uses only system commands, there is nothing to install apart from the java utilities.
 
 
 ## WHAT CAN I DO
@@ -158,7 +158,7 @@ For every process you would like to monitor, you need to ask yourself if you wan
 
 First thing to do is to configure zabbix agent so it can be called from zabbix server.
 
-Create a /etc/zabbix/zabbix_agentd.d/jstat.conf file and add the following line (assuming zjstat is in /usr/local/bin/) or get the jstat.conf file from github:
+Create a /etc/zabbix/zabbix_agentd.d/jstat.conf file and add the following line (assuming zjstat is in /usr/local/bin/) or get the [jstat.conf](/zjstat/zabbix_agentd.d/jstat.conf) file from github:
 
 ```
 UserParameter=custom.proc.num.java[*],/usr/local/bin/zjstat.py $1 $2
@@ -178,6 +178,8 @@ $ zabbix_get -s  hostname  -k custom.proc.num.java[blablabla,alive]
 From the example above you can see that there is 1 "Elasticsearch" "process running and 0 "blablabla" process.
 
 ### Zabbix server configuration
+
+For a quick start-up use the example Zabbix template 
 
 #### Number of process running
 
