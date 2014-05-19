@@ -185,7 +185,7 @@ For a quick start-up use the ElasticSearch [Zabbix template](/zjstat/zabbix temp
 
 To monitor the number of process through Zabbix you need to add a new zabbix item with the following properties :
 
-![alt text](/zjstat/images/zabbix_java_process_item_alive.png  "zjstat item configuration")
+![alt text](/zjstat/images/zabbix_java_process_item_all.png  "zjstat item configuration")
 
 You can add this item on a template (recommended) or directly on the host to monitor.
 
@@ -195,13 +195,39 @@ Next thing is to create a trigger based on this item :
 
 From now on a high severity alert will be triggered if the number of elasticsearch process is not equal to 1.
 
-### Memory
+### Memory stats
 
-Memory stats are sent through zabbix_sender after the number of process have been returned. You also need to change the __mode from alive to all__
+Memory stats are sent through zabbix_sender after the number of process have been returned. To enable memory stats, you need to change the __mode from alive to all__
 
 Change the zabbix item defined above so it include the "all" switch :
 
 ![alt text](/zjstat/images/zabbix_java_process_item_all.png  "zjstat item configuration")
+
+Do the same thing for the corresponding trigger.  
+
+You then need to add 4 zabbix trapper items one for each value :
+* Heap Used (heap_used)
+* Heap Max (heap_max)
+* Perm Used (perm_used)
+* Perm Max (perm_max)
+
+This time keys are based on the following convention : 
+```
+custom.proc.java.processname[metric]
+```
+
+For example the elasticsearch heap used key is :
+```
+custom.proc.java.elasticsearch[heap_used]
+```
+
+__Caution__ : process_name is the process name as returned by jps __without__ capital letters.
+
+At the end your 5 items should look like :
+
+![alt text](/zjstat/images/zabbix_java_process_items.png  "zjstat items list")
+
+
 
 
 ## TODO 
