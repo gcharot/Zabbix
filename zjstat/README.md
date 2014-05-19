@@ -37,13 +37,21 @@ Memory stats are send through zabbix_sender in order to make sure all data are s
 If you want to return more stats, you can easily add your own data, see the Customization chapter.
 
 
+## LIMITATIONS / TODO
+
+* No regular expression, process name __must__ mach the name as returned by jps
+* If more than one java process is found, memory stats will only be sent for the last process found (last process listed by jps).
+* Zabbix support only
+* Heap / PermGen stats only
+* As JAVA_HOME might no be always defined, system commands path are configured statically inside the code
+
 ## Requirements
 
 There is no fancy requirements, only core system tools are required :
 
 * Python >= 2.4
 * jps
-* jstat
+* jstat (only for sending memory stats)
 * zabbix_sender (only for sending memory stats)
 
 ## USAGE
@@ -52,15 +60,16 @@ There is no fancy requirements, only core system tools are required :
 
 There is a minimal configuration check required, open the zjstat.py and double check the "USER CONFIGURABLE PARAMETERS" section (line 18), you should ensure the following paths are correct : 
 * jps
-* jstat
+* jstat (only for sending memory stats)
+* sudo
 * zabbix_sender (only for sending memory stats)
 * zabbix agent configuration file (only for sending memory stats)
 * send_to_zabbix : This values defines if memory stats are sent to zabbix through zabbix_sender. A value of 0 will disable zabbix_sender and also print debug output. Very handy for testing. A value > 0 will send stats to zabbix and disable debug output.
-* Add execution permission (at least for user root and zabbix)
+* Add execution permission on zjstat.py file (at least for user root and zabbix)
 
 ### Command line
 
-Best way to start using zjstats is to use command line.  
+Best way to start using zjstat is to use command line.  
 ```
 Usage : zjstat.py  process_name alive|all
 process_name : java process name as seen in jps output
@@ -89,7 +98,7 @@ If you want zjstat to return number of elsaticsearch process you would type :
 
 "1" is printed as only one Elasticsearch process is running. This value will then be return to zabbix.
 
-In order to avoid output garbage, zjstat silently send memory stats to zabbix; if you want to check the memory features locally you will need to set send_to_zabbix variable to 0 (see "Pre-run configuration chek" section). Then use the following command line : 
+In order to avoid output garbage, zjstat silently sends memory stats to zabbix; if you want to check the memory features locally you need to set send_to_zabbix variable to 0 (see "Pre-run configuration chek" section). Then use the following command line : 
 
 ```
 # ./zjstat.py Elasticsearch all
@@ -140,7 +149,7 @@ If you're happy with the result, you can set send_to_zabbix back to 1 and procee
 ### Principles
 
 zjstat monitoring is splitted in two phases :
-* Number of java process running which is retrieve with classical zabbix agent check
+* Number of java process running which is retrieved with classical zabbix agent check
 * Memory stats which are sent via zabbix_sender once the number of process are returned.
 
 Memory stats are send through zabbix_sender in order to make sure all data are sent in the same time interval.
