@@ -23,7 +23,7 @@ zjstat default feature is to return the number of java process matching the user
 64422 Elasticsearch
 ```
 
-In this case the process name is Elasticsearch
+In this case the process name is "Elasticsearch" (case is important)
 
 ### Memory stat
 
@@ -37,7 +37,7 @@ Memory stats are send through zabbix_sender in order to make sure all data are s
 If you want to return more stats, you can easily add your own data, see the Customization chapter.
 
 
-## LIMITATIONS / TODO
+## Limitations / TODO
 
 * No regular expression, process name __must__ mach the name as returned by jps
 * If more than one java process is found, memory stats will only be sent for the last process found (last process listed by jps).
@@ -188,7 +188,7 @@ From the example above you can see that there is 1 "Elasticsearch" process runni
 
 ### Zabbix server configuration
 
-For a quick start-up use the ElasticSearch [Zabbix template](/zjstat/zabbix template/zbx_template_elastisearch.xml) and adapt it to your needs.
+For a quick start-up use the sample ElasticSearch [Zabbix template](/zjstat/zabbix template/zbx_template_elastisearch.xml) and adapt it to your needs.
 
 #### Number of process running
 
@@ -239,7 +239,36 @@ At the end your 5 items should look like :
 
 Finally you can create graphs and screens (see [Zabbix template](/zjstat/zabbix template/zbx_template_elastisearch.xml)) : 
 
-![alt text](/zjstat/images/zabbix_java_process_trigger.png  "JVM Memory Stats")
+![alt text](/zjstat/images/zabbix_java_process_graphs.png  "JVM Memory Stats")
+
+
+## I need more memory stats
+
+Heap and PermGen are not enough ? No problem, you can easily add you own stat with minimal knowledge in python !
+
+zjstat gathers memory values from jstat command, each time you request memory stats a python dictionary is created with the values return by :
+```
+jstat -gc PID
+jstat -gccapacity PID
+```
+
+The diffents values are explained in the [Oracle documentation](http://docs.oracle.com/javase/1.5.0/docs/tooldocs/share/jstat.html). The collected data are put in a python dictionary called "pdict", this dictionary keeps the same keys => value as jstat which means if you need to get the "Total garbage collection time" (GCT), you can access it with :
+
+		self.zdict['heap_max'] = round(((float(self.pdict['NGCMX']) + float(self.pdict['OGCMX'])) * 1024),2)
+```python
+self.pdict['GCT']
+```
+
+This being said, all values sent to zabbix are stored in a different dictionnary called "zdict", if you want to send "Total garbage collection time" to Zabbix you need to add the following line in the "compute_jstats" method.
+```python
+self.zdict['total_gb_time'] = round(float(self.pdict['GCT']) * 1024,2)
+```
+
+If you want to return Suvivor Space utilization (S0U + S1U) you would add :
+```python
+self.zdict['survivor_used'] = round(((float(self.pdict['S0U']) + float(self.pdict['S1U'])) * 1024),2)
+```
+
 
 
 
