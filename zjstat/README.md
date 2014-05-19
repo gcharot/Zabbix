@@ -8,7 +8,7 @@ Zjstat is zabbix probe that checks the number of java process running and option
 ## WHY
 
 
-By default zabbix offers the proc.num check unfortunately this check is based on the process command line which is not very convinient for java processes. Concerning java process memory monitoring, this requires a JMX interface which is not nécessarely supported by all program or very contraignant to deploy.
+By default zabbix offers the proc.num check unfortunately this check is based on the process command line which is not very convinient for java processes. Concerning java process memory monitoring, this requires a JMX interface which is not necessarily supported by all program or very contraignant to deploy.
 
 zjstat uses only system command, there is nothing to install apart from the java utilities.
 
@@ -50,12 +50,13 @@ There is no fancy requirements, only core system tools are required :
 
 ### Pre-run configuration chek
 
-There is a minimal configuration check required, open the zjstat.py and double check the "USER CONFIGURABLE PARAMETERS" section (line 18), you should ensure the following paths are corect : 
+There is a minimal configuration check required, open the zjstat.py and double check the "USER CONFIGURABLE PARAMETERS" section (line 18), you should ensure the following paths are correct : 
 * jps
 * jstat
 * zabbix_sender (only for sending memory stats)
 * zabbix agent configuration file (only for sending memory stats)
 * send_to_zabbix : This values defines if memory stats are sent to zabbix through zabbix_sender. A value of 0 will disable zabbix_sender and also print debug output. Very handy for testing. A value > 0 will send stats to zabbix and disable debug output.
+* Add execution permission (at least for user root and zabbix)
 
 ### Command line
 
@@ -68,7 +69,7 @@ Modes :
         all : Send memory stats as well
 ```
 
-zjstat requires two arguments, the process name as shown by jps and the mode which defines if you want to return the number of matching processes (alive) or send memory stats as well (all).
+zjstat requires two arguments, the __process name__ as shown by jps and the __mode__ which defines if you want to return the number of matching processes (alive) or send memory stats as well (all).
 
 "alive" only prints the number of process found which is handy for zabbix monitoring, "all" does the same thing but also send memory stat through zabbix_sender.
 
@@ -125,16 +126,38 @@ As you can see, setting send_to_zabbix to 0 added debug output, the "all" option
 
 * The first section shows if process(es) matching user input are running on the system
 * The second section shows the commands used to get memory statistics
-* The third section shows the collected data (collected stat dictionary) and the values that would be sent to zabbix (zabbix stat dictionary).
-* The fourth section show the zabbix_sender commands that would be executed if sent_to_zabbix > 0
+* The third section shows the process collected data (collected stat dictionary) and the values that would be sent to zabbix (zabbix stat dictionary).
+* The fourth section shows the zabbix_sender commands that would be executed if sent_to_zabbix > 0
 
 
-BE AWARE that the "collected stat dictionary" values are in KB (as reported by jstat) and "zabbix stat dictionary" values are in Bytes as it is much simpler to process by Zabbix.
+__BE AWARE__ that the "collected stat dictionary" values are in KB (as reported by jstat) and "zabbix stat dictionary" values are in Bytes as it is much simpler to process by Zabbix.  
 
 If you're happy with the result, you can set send_to_zabbix back to 1 and proceed with zabbix integration !
 
 
 ## Zabbix integration
+
+### Principles
+
+zjstat monitoring is splitted in two phases :
+* Number of java process running which is retrieve with classical zabbix agent check
+* Memory stats which are sent via zabbix_sender once the number of process are returned.
+
+Memory stats are send through zabbix_sender in order to make sure all data are sent in the same time interval.
+
+For every process you would like to monitor, you need to ask yourself if you want to monitor only the number of process running or send the memory stats as well. This will decide which zabbix configuration to use.
+
+
+### Requirements
+
+
+* User zabbix is able to sudo jps as root without password
+* User zabbix is able to sudo jstat as root without password (memory stats only)
+* Host is able to send data to zabbix through zabbix_serder (zabbix trapper)
+
+### Zabbix agent configuration
+
+
 
 
 ## TODO 
