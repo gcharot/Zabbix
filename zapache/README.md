@@ -15,7 +15,10 @@ zapache returns the average request per second as well as the number of GET/PUT 
 
 zapache can be configured to return the number of http request based on their HTTP status code. 
 
-Defaults are : "200", "401", "402", "403", "404", "405", "406", "408", "409", "410", "411", "412", "413", "414", "417", "500", "501", "502", "503", "504".
+Defaults are : 
+```
+"400", "401", "402", "403", "404", "405", "406", "408", "409", "410", "411", "412", "413", "414", "417", "500", "501", "502", "503", "504".
+```
 
 ### Unique IPs
 
@@ -44,24 +47,83 @@ There is a minimal configuration check required, open the zapache.py and double 
 * zabbix agent configuration file
 * send_to_zabbix : This values defines if memory stats are sent to zabbix through zabbix_sender. A value of 0 will disable zabbix_sender.
 * debug : This values defines if debug ouput is printed. Very handy for testing. A value > 0 will print debug output.
-* Add execution permission on apache.py file (at least for user root)
 * my_resp_code : This defines which HTTP reponse code stats will be sent to zabbix. Add / remove to fit your needs
-* my_req_type : This defines which type of request will be sent to zabbix. Add / remove to fit your needs. Default is GET & POST
+* my_req_type : This defines which type of HTTP request will be sent to zabbix. Add / remove to fit your needs. Default is GET & POST
+* Add execution permission on apache.py file (at least for user root)
 
 ### Command line
 
 Best way to start using zapache is to use command line.  
+```
+Usage : zapache.py logfile
+```
+
+Set debug to 1 and send_to_zabbix to 0 then execute zapache :
+```
+./zapache2.py /var/log/httpd/access_log
+Logtailing file  /var/log/httpd/access_log with offset  /tmp/zapache-logtail.offset sending delta to  /tmp/zapache-logtail.data
+sending key :  apache[ip_count]  - value :  53
+sending key :  apache[nr_req]  - value :  7853
+sending key :  apache[GET]  - value :  6403
+sending key :  apache[406]  - value :  0
+sending key :  apache[405]  - value :  0
+sending key :  apache[404]  - value :  15
+sending key :  apache[403]  - value :  12
+sending key :  apache[402]  - value :  0
+sending key :  apache[401]  - value :  0
+sending key :  apache[504]  - value :  0
+sending key :  apache[502]  - value :  0
+sending key :  apache[503]  - value :  0
+sending key :  apache[500]  - value :  4
+sending key :  apache[501]  - value :  0
+sending key :  apache[200]  - value :  7323
+sending key :  apache[POST]  - value :  1432
+sending key :  apache[409]  - value :  0
+sending key :  apache[414]  - value :  0
+sending key :  apache[417]  - value :  0
+sending key :  apache[410]  - value :  0
+sending key :  apache[411]  - value :  0
+sending key :  apache[412]  - value :  0
+sending key :  apache[413]  - value :  0
+sending key :  apache[408]  - value :  0
+```
+
+Debug show what values will be sent to zabbix, as send_to_zabbix is 0 nothing will be sent. Execute the same command again after 1 minute you should have the delta.
+
+__CAUTION__ : As zapache is based on logtail, the first execution will parse you entire log !
+
+If everything is fine reset debug and send_to_zabbix to their original values and proceed with zabbix integration.
+
+## Zabbix integration
+
+### Zabbix Template
+
+Import the Zabbix template, this template includes all default values and is ready to use :
+
+* HTTP total requests per second
+
+* HTTP GET/PUT requests per second
+
+* HTTP Status Code :  "400", "401", "402", "403", "404", "405", "406", "408", "409", "410", "411", "412", "413", "414", "417", "500", "501", "502", "503", "504".
+
+* Number of Unique IPs
+
+* Monitoring of Apache process (via proc.num)
+
+
+Then link the template to the host you want to monitor.
+
+
+
+
 
 
 
 TODO README
 
 template
-add module
 cron
-LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\"" zabbix
 
-CustomLog logs/ssl_zabbix_evenium_prod_access_log zabbix
 
 
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin

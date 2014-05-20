@@ -33,7 +33,7 @@ logtail_file = "/tmp/zapache-logtail.data"			# Logtail output (delta file)
 # Zapache
 debug = 0 											# Debug : 0 = Off
 send_to_zabbix = 1 									# Send data to zabbix ? > 0 = Yes / 0 = No
-my_resp_code = ("200", "401", "402", "403", "404", "405", "406", "408", "409", "410", "411", "412", "413", "414", "417", "500", "501", "502", "503", "504")				# Wanted status code.
+my_resp_code = ("400", "401", "402", "403", "404", "405", "406", "408", "409", "410", "411", "412", "413", "414", "417", "500", "501", "502", "503", "504")				# Wanted status code.
 my_req_type = ("GET", "POST")																																			# Wanted request type
 
 
