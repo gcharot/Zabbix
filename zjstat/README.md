@@ -5,6 +5,8 @@ zjstat - Return number of java process matching user's input and send memory sta
 
 Zjstat is zabbix probe that checks the number of java process running and optionally sends process JVM details (heap size and perm gen). 
 
+![alt text](/zjstat/images/zabbix_java_process_graphs.png  "JVM Memory Stats")
+
 ## WHY
 
 
