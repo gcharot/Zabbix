@@ -19,12 +19,43 @@ Defaults are : "200", "401", "402", "403", "404", "405", "406", "408", "409", "4
 
 ### Unique IPs
 
-zapache return the number of unique IP that hit your webserver.
+zapache returns the number of unique IP that hit your webserver.
+
+
+## Requirements
+
+The following elements are required for zapache to work :
+
+* Python >= 2.6
+* logtail2
+* zabbix_sender
+* Apache Logs in CLF format, the following format is supported :
+```
+LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\""
+```
+If different you need to change the code line 57, 71 and 78.
+
+## USAGE
+
+### Pre-run configuration chek
+
+There is a minimal configuration check required, open the zapache.py and double check the "User defined variables" section (line 22), you should ensure the following paths are correct : 
+* zabbix_sender
+* zabbix agent configuration file
+* send_to_zabbix : This values defines if memory stats are sent to zabbix through zabbix_sender. A value of 0 will disable zabbix_sender.
+* debug : This values defines if debug ouput is printed. Very handy for testing. A value > 0 will print debug output.
+* Add execution permission on apache.py file (at least for user root)
+* my_resp_code : This defines which HTTP reponse code stats will be sent to zabbix. Add / remove to fit your needs
+* my_req_type : This defines which type of request will be sent to zabbix. Add / remove to fit your needs. Default is GET & POST
+
+### Command line
+
+Best way to start using zapache is to use command line.  
+
 
 
 TODO README
 
-logtail2 install
 template
 add module
 cron

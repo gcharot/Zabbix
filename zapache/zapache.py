@@ -37,7 +37,7 @@ my_resp_code = ("200", "401", "402", "403", "404", "405", "406", "408", "409", "
 my_req_type = ("GET", "POST")																																			# Wanted request type
 
 
-#####
+##### Class to parse Apache log based on Kevin Scott module #####
 
 class ApacheLogLine:
   """ ApacheLogLine from Kevin Scott (kevin.scott@gmail.com) """
@@ -139,7 +139,8 @@ def zabbix_send(metric, value):
 		except OSError as detail:
   			print "Something went wrong while exectuting zabbix_sender : ", detail
 
-###########
+
+##### MAIN #####
 
 # Check argv
 try:
