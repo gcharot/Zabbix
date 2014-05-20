@@ -110,6 +110,8 @@ Import the [Zabbix template](/zapache/zabbix template/zbx_template_apache.xml), 
 
 * Monitoring of Apache process (via proc.num)
 
+* Triggers on Apache process and 500 Status
+
 * Graphs and screen  
 
 
@@ -134,7 +136,7 @@ To check if Zabbix receives the data go to "Monitoring -> Latest Data", choose y
 ## I need more stats
 
 If you need more status code / request type, you just need to add your own values in the python lists.  
-For example, I want to monitor status code 200 and HEAD request.
+For example, I want to monitor status code 200 and HEAD requests.
 
 * Add "200" and "HEAD" to the lists :
 
@@ -149,6 +151,7 @@ my_req_type = ("GET", "POST", "HEAD")
 apache[200]
 apache[HEAD]
 ```
+And you're done !
 
 If you have any issue enable debug mode and run zapache manually.
 
