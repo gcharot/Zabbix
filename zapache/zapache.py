@@ -1,25 +1,25 @@
 #!/usr/bin/python
 
-# Zabbix Apache probe
+# Zabbix Apache probe Gregory Charot
+# ApacheLogLine Based on Kevin Scott apachelogs python module
 
 # TODO : Create lock file to avoid multiple instance running at the same time
 
-import apachelogs
 import re
 import sys
 import os
+import time
 from subprocess import call
 
 __author__ = "Gregory Charot"
-__copyright__ = "Copyright 2014, Gregory Charot"
+__copyright__ = "Copyright 2014, Gregory Charot - Kevin Scott for ApacheLogLine"
 __license__ = "GPL"
 __version__ = "1.0.1"
 __maintainer__ = "Gregory Charot"
 __email__ = "gregory.charot@gmail.com"
 __status__ = "Production"
 
-
-##### User defined variables
+##### User defined variables #####
 
 # Zabbix
 zabbix_sender = "/usr/bin/zabbix_sender"			# Path to zabbix_sender binary
@@ -38,6 +38,64 @@ my_req_type = ("GET", "POST")																																			# Wanted request
 
 
 #####
+
+class ApacheLogLine:
+  """ ApacheLogLine from Kevin Scott (kevin.scott@gmail.com) """
+  def __init__(self, ip, id, hu, t, rl, hrc, hrs, r, ua): 
+    self.ip = ip
+    self.ident = id
+    self.http_user = hu
+    self.time = t
+    self.request_line = rl
+    self.http_response_code = hrc
+    self.http_response_size = hrs
+    self.referrer = r
+    self.user_agent = ua
+
+  def __str__(self):
+    """Return a simple string representation of an ApacheLogLine."""
+    return ','.join([self.ip, self.ident, self.time, self.request_line,
+        self.http_response_code, self.http_response_size, self.referrer,
+        self.user_agent])
+
+class ApacheLogFile:
+  """An abstraction for reading and parsing Apache log files."""
+
+  class _ApacheLogFileGenerator:
+    """Helper for iterating over log lines and instantiating ApacheLogLines."""
+    def __init__(self, f):
+      self.f = f
+      # We only compile the regular expression which handles the log line
+      # parsing once per pass over the file, i.e., when client code asks for
+      # an iterator.
+      self.r = re.compile(r'(\d+\.\d+\.\d+\.\d+) (.*) (.*) \[(.*)\] "(.*)" (\d+) (.*) "(.*)" "(.*)"')
+
+    def Generator(self):
+      """Generator which yields parsed ApacheLogLines from log file lines."""
+      for line in self.f:
+        m = self.r.match(line)
+        if m:
+          log_line = ApacheLogLine(m.group(1), m.group(2), m.group(3),
+              m.group(4), m.group(5), m.group(6), m.group(7), m.group(8),
+              m.group(9))
+          yield log_line
+
+  def __init__(self, filename):
+    """Instantiating an ApacheLogFile opens a log file.  
+    
+    Client is responsible for closing the opened log file by calling close()"""
+    self.f = open(filename)
+
+  def close(self):
+    """Closes the actual Apache log file."""
+    self.f.close()
+
+  def __iter__(self):
+    """Builds an iterator from gen.Generator."""
+    gen = ApacheLogFile._ApacheLogFileGenerator(self.f)
+    return gen.Generator()
+
+
 
 ##### FUNCTION's DECLARATIONS #####
 
@@ -117,7 +175,7 @@ ip_list = set()																	# Contains list of Client's IPs
 
 logtail_that_file()
 
-log = apachelogs.ApacheLogFile(logtail_file)											# Open "logtailed" file
+log = ApacheLogFile(logtail_file)											# Open "logtailed" file
 
 for log_line in log:																	# Parse logfile line by line
 
@@ -128,6 +186,7 @@ for log_line in log:																	# Parse logfile line by line
 	count_request_type(log_line.request_line)
 
 
+log.close()
 # Remove localhost  from list of client's IPs
 ip_list.discard("127.0.0.1")
 
