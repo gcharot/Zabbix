@@ -9,11 +9,11 @@ zapache - Return traffic and HTTP requests statistics via zabbix_sender
 
 ### Number of requests
 
-zapache returns the average request per second as well as the number of GET/PUT requests.
+zapache returns the average request per second as well as the number of GET/POST requests.
 
 ### Type of request
 
-zapache can be configured to return the number of http request based on their HTTP status code. 
+zapache can be configured to return the number of HTTP requests based on their HTTP status code. 
 
 Defaults are : 
 ```
@@ -42,9 +42,9 @@ If different you need to change the code line 57, 71 and 78.
 
 ### Pre-run configuration chek
 
-There is a minimal configuration check required, open the zapache.py and double check the "User defined variables" section (line 22), you should ensure the following paths are correct : 
-* zabbix_sender
-* zabbix agent configuration file
+There is a minimal configuration check required, open the zapache.py and double check the "User defined variables" section (line 22), you should ensure the following are correct : 
+* path to zabbix_sender
+* path to zabbix agent configuration file
 * send_to_zabbix : This values defines if memory stats are sent to zabbix through zabbix_sender. A value of 0 will disable zabbix_sender.
 * debug : This values defines if debug ouput is printed. Very handy for testing. A value > 0 will print debug output.
 * my_resp_code : This defines which HTTP reponse code stats will be sent to zabbix. Add / remove to fit your needs
@@ -88,21 +88,21 @@ sending key :  apache[413]  - value :  0
 sending key :  apache[408]  - value :  0
 ```
 
-Debug show what values will be sent to zabbix, as send_to_zabbix is 0 nothing will be sent. Execute the same command again after one minute you should have the delta values.
+Debug shows what keys/values will be sent to zabbix, as send_to_zabbix is 0 nothing will be sent. Execute the same command again after one minute you should have the delta values.
 
 __CAUTION__ : As zapache is based on logtail, the first execution will parse you entire log !
 
-If everything is fine reset debug and send_to_zabbix to their original values and proceed with zabbix integration.
+If everything is fine, reset debug and send_to_zabbix to their original values and proceed with zabbix integration.
 
 ## Zabbix integration
 
 ### Zabbix Template
 
-Import the Zabbix template, this template includes all default values and is ready to use :
+Import the [Zabbix template](/zapache/zabbix template/zbx_template_apache.xml), this template includes all default values and is ready to use :
 
 * HTTP total requests per second
 
-* HTTP GET/PUT requests per second
+* HTTP GET/POST requests per second
 
 * HTTP Status Code :  "400", "401", "402", "403", "404", "405", "406", "408", "409", "410", "411", "412", "413", "414", "417", "500", "501", "502", "503", "504".
 
@@ -133,7 +133,7 @@ To check if Zabbix receives the data go to "Monitoring -> Latest Data", choose y
 
 ## I need more stats
 
-If you need more status code / request type you just need to add your own values in the python list.  
+If you need more status code / request type, you just need to add your own values in the python lists.  
 For example, I want to monitor status code 200 and HEAD request.
 
 * Add "200" and "HEAD" to the lists :
