@@ -2,7 +2,7 @@
 
 zapache - Return traffic and HTTP requests statistics via zabbix_sender
 
-![alt text](/zapache/images/zapache_screen.png "zjstat item configuration")
+![alt text](/zapache/images/zapache_screen.png "zapache screen")
 
 
 ## WHAT CAN I DO
@@ -60,7 +60,7 @@ Usage : zapache.py logfile
 
 Set debug to 1 and send_to_zabbix to 0 then execute zapache :
 ```
-./zapache2.py /var/log/httpd/access_log
+# ./zapache2.py /var/log/httpd/access_log
 Logtailing file  /var/log/httpd/access_log with offset  /tmp/zapache-logtail.offset sending delta to  /tmp/zapache-logtail.data
 sending key :  apache[ip_count]  - value :  53
 sending key :  apache[nr_req]  - value :  7853
@@ -88,7 +88,7 @@ sending key :  apache[413]  - value :  0
 sending key :  apache[408]  - value :  0
 ```
 
-Debug show what values will be sent to zabbix, as send_to_zabbix is 0 nothing will be sent. Execute the same command again after 1 minute you should have the delta.
+Debug show what values will be sent to zabbix, as send_to_zabbix is 0 nothing will be sent. Execute the same command again after one minute you should have the delta values.
 
 __CAUTION__ : As zapache is based on logtail, the first execution will parse you entire log !
 
@@ -110,23 +110,45 @@ Import the Zabbix template, this template includes all default values and is rea
 
 * Monitoring of Apache process (via proc.num)
 
+* Graphs and screen  
+
 
 Then link the template to the host you want to monitor.
 
+### Cron Job
 
+Final step is to create a cron job to execute zapache every minute :
 
-
-
-
-
-TODO README
-
-template
-cron
-
-
-
+```
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-
 # Apache zabbix probe
-* * * * * root /usr/local/scripts/zabbix/zapache.py /var/log/httpd/ssl_zabbix_evenium_prod_access_log
+* * * * * root /usr/local/bin/zapache.py /var/log/httpd/kibana_access_log
+```
+Adapt the paths to fit you own needs.
+
+### Final check
+
+To check if Zabbix receives the data go to "Monitoring -> Latest Data", choose your host and select the "Apache" application. You should see new values comming every minute.
+
+
+## I need more stats
+
+If you need more status code / request type you just need to add your own values in the python list.  
+For example, I want to monitor status code 200 and HEAD request.
+
+* Add "200" and "HEAD" to the lists :
+
+```python
+my_resp_code = ("200", "400", "401", "402", "403", "404", "405", "406", "408", "409", "410", "411", "412", "413", "414", "417", "500", "501", "502", "503", "504")				# Wanted status code.
+my_req_type = ("GET", "POST", "HEAD")		
+```
+
+* Create the corresponding Zabbix items with the following keys :
+
+```
+apache[200]
+apache[HEAD]
+```
+
+If you have any issue enable debug mode and run zapache manually.
+
