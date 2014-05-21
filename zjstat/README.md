@@ -3,16 +3,18 @@
 
 zjstat - Return number of java process matching user's input and send memory stats via zabbix_sender
 
-Zjstat is zabbix probe that checks the number of java process running and optionally sends process JVM details (heap size and perm gen). 
+Zjstat is zabbix probe that checks the number of java process running and optionally sends process JVM details (heap size and perm gen) without the need to enable JMX
+
+__Note :__ Zjstat can return JVM memory details without JMX, however if you can enable JMX __it is preferable to use it as it is much more flexible/efficient__. Zjstat is useful __whenever you can't or don't want to enable JMX__.
 
 ![alt text](/zjstat/images/zabbix_java_process_graphs.png  "JVM Memory Stats")
 
 ## WHY
 
 
-By default zabbix offers the proc.num check unfortunately this check is based on the process command line which is not very convinient for java processes. Concerning java process memory monitoring, this requires a JMX interface which is not necessarily supported by all program or very contraignant to deploy.
+By default zabbix offers the proc.num check unfortunately this check is based on the process command line which is not very convinient for java processes. Concerning java process memory monitoring, this requires a JMX interface which is not necessarily supported by all program or very contraignant to deploy. Again, if you can enable JMX, just use zjstat for process running checks.
 
-zjstat only uses system commands, there is nothing to install apart from the java utilities.
+zjstat only uses system commands, there is nothing to install apart from the java utilities. No need to modify your java applications.
 
 
 ## WHAT CAN I DO
@@ -36,7 +38,7 @@ zjstat can also return memory statistics :
 * PERM USED
 
 Memory stats are send through zabbix_sender in order to make sure all data are sent in the same time interval.  
-If you want to return more stats, you can easily add your own data, see [I need more memory stats](#i-need-more-memory-stats) section.
+If you want to return more stats, you can easily add your own data, see [I need more memory stats](#i-need-more-memory-stats) section. However if you need very detailed stats it might be a better idea to use a JMX interface instead.
 
 
 ## Limitations / TODO
