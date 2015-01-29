@@ -45,7 +45,7 @@ If different you need to change the code line 57, 71 and 78.
 There is a minimal configuration check required, open the zapache.py and double check the "User defined variables" section (line 22), you should ensure the following are correct : 
 * path to zabbix_sender
 * path to zabbix agent configuration file
-* send_to_zabbix : This values defines if memory stats are sent to zabbix through zabbix_sender. A value of 0 will disable zabbix_sender.
+* send_to_zabbix : This values defines if stats are sent to zabbix through zabbix_sender. A value of 0 will disable zabbix_sender.
 * debug : This values defines if debug ouput is printed. Very handy for testing. A value > 0 will print debug output.
 * my_resp_code : This defines which HTTP reponse code stats will be sent to zabbix. Add / remove to fit your needs
 * my_req_type : This defines which type of HTTP request will be sent to zabbix. Add / remove to fit your needs. Default is GET & POST
