@@ -1180,7 +1180,7 @@
             <priority>3</priority>
             <description>No HTTPd process found !!!</description>
             <type>0</type>
-            </dependencies>
+            <dependencies/>
         </trigger>
         <trigger>
             <expression>{Template Linux Apache:apache[500].avg(120)}&gt;100</expression>
