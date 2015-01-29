@@ -1180,11 +1180,6 @@
             <priority>3</priority>
             <description>No HTTPd process found !!!</description>
             <type>0</type>
-            <dependencies>
-                <dependency>
-                    <name>ICMP FRONT</name>
-                    <expression>{Template Linux Evenium :icmpping[{$FRONT},3,,,].last(0)}#1</expression>
-                </dependency>
             </dependencies>
         </trigger>
         <trigger>
