@@ -90,7 +90,7 @@ sending key :  apache[408]  - value :  0
 
 Debug shows what keys/values will be sent to zabbix, as send_to_zabbix is 0 nothing will be sent. Execute the same command again after one minute you should have the delta values.
 
-__CAUTION__ : As zapache is based on logtail, the first execution will parse you entire log !
+__CAUTION__ : As zapache is based on logtail, the first execution will parse your entire log !
 
 If everything is fine, reset debug and send_to_zabbix to their original values and proceed with zabbix integration.
 
