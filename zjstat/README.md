@@ -48,6 +48,7 @@ If you want to return more stats, you can easily add your own data, see [I need 
 * Zabbix support only
 * Heap / PermGen stats only. See [I need more memory stats](#i-need-more-memory-stats) section for adding more stats.
 * As JAVA_HOME might not be always defined, system commands path are configured statically inside the code
+* Support for JAVA 8
 
 ## Requirements
 
