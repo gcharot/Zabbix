@@ -108,6 +108,7 @@ In order to avoid output garbage, zjstat silently sends memory stats to zabbix; 
 
 ```
 # ./zjstat.py Elasticsearch all
+Found Java version :  7
 Process found : Elasticsearch with pid : 64422
 1
 There is  1 running process named Elasticsearch
