@@ -25,7 +25,7 @@ jstat = '/usr/java/default/bin/jstat'
 zabbix_key = 'custom.proc.java'						# Zabbix key root - Full key is zabbix_key.process_name[metric]
 zabbix_sender = "/usr/bin/zabbix_sender"			# Path to zabbix_sender binary
 zabbix_conf = "/etc/zabbix/zabbix_agentd.conf"		# Path to Zabbix agent configuration
-send_to_zabbix = 1									# Send data to zabbix ? > 0 is yes / 0 is No + debug output. Used for memory stats only
+send_to_zabbix = 0									# Send data to zabbix ? > 0 is yes / 0 is No + debug output. Used for memory stats only
 
 
 def usage():
@@ -134,6 +134,28 @@ class Jprocess:
    			print "Simulation: the following command would be execucted :\n", zabbix_sender, "-c", zabbix_conf, "-k", key, "-o", str(self.zdict[metric]), "\n"
 
 
+# Check JVM version in order to get the proper stats
+
+def check_java_version():
+
+	jd = subprocess.check_output(["java", "-version"],
+		stderr=subprocess.STDOUT)
+
+	java_version=jd[16]
+
+# Check we did received a proper value
+	try: 
+		int(java_version)
+		if send_to_zabbix == 0: print "Found Java version : ", java_version
+		return java_version
+	except ValueError:
+		print "Unable to found Java version, check your java installation, value found was :", java_version
+		sys.exit(1)
+
+
+#	if send_to_zabbix == 0: print "Found Java version : ", java_version
+#	return java_version
+
 
 
 # List of accepted mode --- alive : Return number of running process - all : Send mem stats as well
@@ -148,6 +170,7 @@ if len(sys.argv) == 3 and sys.argv[2] in accepted_modes:
 else:
 	usage()
 
+java_version = check_java_version()
 
 # Check if process is running / Get PID
 jproc = Jprocess(procname) 
