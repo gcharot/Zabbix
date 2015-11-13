@@ -43,12 +43,11 @@ If you want to return more stats, you can easily add your own data, see [I need 
 
 ## Limitations / TODO
 
-* No regular expression, process name __must__ mach the name as returned by jps
+* No regular expression, process name __must__ match the name as returned by jps
 * If more than one matching java process is found, memory stats will only be sent for the last process found (last process listed by jps).
 * Zabbix support only
 * Heap / PermGen stats only. See [I need more memory stats](#i-need-more-memory-stats) section for adding more stats.
 * As JAVA_HOME might not be always defined, system commands path are configured statically inside the code
-* Support for JAVA 8
 
 ## Requirements
 
@@ -58,7 +57,9 @@ There is no fancy requirements, only core system tools are required :
 * sudo
 * jps
 * jstat (only for sending memory stats)
+* Java command (to check java version)
 * zabbix_sender (only for sending memory stats)
+* Tested with SUN JRE 7 & 8 other version may work.
 
 ## USAGE
 
@@ -107,6 +108,7 @@ In order to avoid output garbage, zjstat silently sends memory stats to zabbix; 
 
 ```
 # ./zjstat.py Elasticsearch all
+Found Java version :  7
 Process found : Elasticsearch with pid : 64422
 1
 There is  1 running process named Elasticsearch
