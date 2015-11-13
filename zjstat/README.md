@@ -59,7 +59,7 @@ There is no fancy requirements, only core system tools are required :
 * jstat (only for sending memory stats)
 * Java command (to check java version)
 * zabbix_sender (only for sending memory stats)
-* Tested with Java 7 & 8 other version may work
+* Tested with SUN JRE 7 & 8 other version may work.
 
 ## USAGE
 
