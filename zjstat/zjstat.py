@@ -26,7 +26,7 @@ jstat = '/usr/java/default/bin/jstat'
 zabbix_key = 'custom.proc.java'						# Zabbix key root - Full key is zabbix_key.process_name[metric]
 zabbix_sender = "/usr/bin/zabbix_sender"			# Path to zabbix_sender binary
 zabbix_conf = "/etc/zabbix/zabbix_agentd.conf"		# Path to Zabbix agent configuration
-send_to_zabbix = 0									# Send data to zabbix ? > 0 is yes / 0 is No + debug output. Used for memory stats only
+send_to_zabbix = 1									# Send data to zabbix ? > 0 is yes / 0 is No + debug output. Used for memory stats only
 
 ### End of user configurable variable
 
