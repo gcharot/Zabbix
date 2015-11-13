@@ -5,6 +5,7 @@
 import subprocess
 import sys
 import os
+import re
 
 __author__ = "Gregory Charot"
 __copyright__ = "Copyright 2014, Gregory Charot"
@@ -25,7 +26,7 @@ jstat = '/usr/java/default/bin/jstat'
 zabbix_key = 'custom.proc.java'						# Zabbix key root - Full key is zabbix_key.process_name[metric]
 zabbix_sender = "/usr/bin/zabbix_sender"			# Path to zabbix_sender binary
 zabbix_conf = "/etc/zabbix/zabbix_agentd.conf"		# Path to Zabbix agent configuration
-send_to_zabbix = 1									# Send data to zabbix ? > 0 is yes / 0 is No + debug output. Used for memory stats only
+send_to_zabbix = 0									# Send data to zabbix ? > 0 is yes / 0 is No + debug output. Used for memory stats only
 
 ### End of user configurable variable
 
@@ -148,7 +149,9 @@ def check_java_version():
 	jd = subprocess.check_output(["java", "-version"],
 		stderr=subprocess.STDOUT)
 
-	java_version=jd[16]
+	match = re.search('version \"\d\.(\d)\.', jd)
+
+	java_version = match.group(1)
 
 # Check we did received a proper value
 	try: 
@@ -164,7 +167,7 @@ def check_java_version():
 
 accepted_modes = ['alive', 'all']
 
-# Check/initialize args
+# Check/initialize user input args
 
 if len(sys.argv) == 3 and sys.argv[2] in accepted_modes:
 	procname = sys.argv[1]
@@ -183,8 +186,8 @@ jproc.chk_proc()
 print jproc.pdict["nproc"]
 if send_to_zabbix == 0: print "There is ", jproc.pdict['nproc'], "running process named", jproc.pdict['jpname']
 
-# If mode is all - Get memory stats and send them to zabbix.
-if mode == "all":
+# If mode is all & process is found - Get memory stats and send them to zabbix.
+if mode == "all" and jproc.pdict['nproc'] != 0:
 	jproc.get_jstats()					# Get values from jstat
 	jproc.compute_jstats()				# Compute stats that will be sent to zabbix
 	FNULL = open(os.devnull, 'w')		# Open devnull to redirect zabbix_sender output
