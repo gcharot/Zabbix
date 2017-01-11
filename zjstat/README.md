@@ -53,7 +53,7 @@ If you want to return more stats, you can easily add your own data, see [I need 
 
 There is no fancy requirements, only core system tools are required :
 
-* Python >= 2.4
+* Python >= 2.7
 * sudo
 * jps
 * jstat (only for sending memory stats)
