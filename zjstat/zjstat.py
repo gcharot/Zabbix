@@ -110,10 +110,10 @@ class Jprocess:
 			return False
 
 # Put perm gen stat in zabbix dictionary - No need to compute anything here
-	# JAVA 8 uses MU & MC for metaspace
+	# JAVA 8 uses MU & MCMX for metaspace
 		if java_version >= '8':
 			self.zdict['perm_used'] = round(float(self.pdict['MU']) * 1024,2)
-			self.zdict['perm_max'] = round(float(self.pdict['MC']) * 1024,2)
+			self.zdict['perm_max'] = round(float(self.pdict['MCMX']) * 1024,2)
 	# Prior Java 8 it was PU & PGCMX		
 		else:
 			self.zdict['perm_used'] = round(float(self.pdict['PU']) * 1024,2)
