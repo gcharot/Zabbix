@@ -119,8 +119,8 @@ class Jprocess:
 			self.zdict['perm_used'] = round(float(self.pdict['PU']) * 1024,2)
 			self.zdict['perm_max'] = round(float(self.pdict['PGCMX']) * 1024,2)
 
-# Compute heap size used/max = Eden + Old space
-		self.zdict['heap_used'] = round(((float(self.pdict['EU']) + float(self.pdict['OU'])) * 1024),2)
+# Compute heap size used/max = Eden + Survivor + Old space
+		self.zdict['heap_used'] = round(((float(self.pdict['EU']) + float(self.pdict['S0U']) + float(self.pdict['S1U']) + float(self.pdict['OU'])) * 1024),2)
 		self.zdict['heap_max'] = round(((float(self.pdict['NGCMX']) + float(self.pdict['OGCMX'])) * 1024),2)
 
 		if send_to_zabbix == 0: print "Dumping zabbix stat dictionary\n-----\n", self.zdict, "\n-----\n"
