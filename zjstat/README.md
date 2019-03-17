@@ -33,9 +33,26 @@ In this case the process name is "Elasticsearch" (case is important).
 
 zjstat can also return memory statistics :
 * HEAP MAX
+* HEAP CAPACITY
 * HEAP USED
-* PERM MAX
-* PERM USED
+* HEAP NEW MAX
+* HEAP NEW CAPACITY
+* HEAP NEW USED
+* HEAP OLD MAX
+* HEAP OLD CAPACITY
+* HEAP OLD USED
+* OFF-HEAP MAX
+* OFF-HEAP CAPACITY
+* OFF-HEAP USED
+* OFF-HEAP PERM MAX
+* OFF-HEAP PERM CAPACITY
+* OFF-HEAP PERM USED
+* OFF-HEAP META MAX
+* OFF-HEAP META CAPACITY
+* OFF-HEAP META USED
+* OFF-HEAP CCS MAX
+* OFF-HEAP CCS CAPACITY
+* OFF-HEAP CCS USED
 
 Memory stats are send through zabbix_sender in order to make sure all data are sent in the same time interval.  
 If you want to return more stats, you can easily add your own data, see [I need more memory stats](#i-need-more-memory-stats) section. However if you need very detailed stats it might be a better idea to use a JMX interface instead.
@@ -46,7 +63,7 @@ If you want to return more stats, you can easily add your own data, see [I need 
 * No regular expression, process name __must__ match the name as returned by jps
 * If more than one matching java process is found, memory stats will only be sent for the last process found (last process listed by jps).
 * Zabbix support only
-* Heap / PermGen stats only. See [I need more memory stats](#i-need-more-memory-stats) section for adding more stats.
+* Heap / Off-Heap stats only. See [I need more memory stats](#i-need-more-memory-stats) section for adding more stats.
 * As JAVA_HOME might not be always defined, system commands path are configured statically inside the code
 
 ## Requirements
@@ -117,25 +134,76 @@ Getting -gccapacity stats for process 64422 with command : sudo /usr/java/defaul
 
 Dumping collected stat dictionary
 -----
-{'NGC': '1107520.0', 'NGCMN': '1107520.0', 'pid': '64422', 'S0U': '0.0', 'EC': '886080.0', 'S1C': '110720.0', 'S1U': '30084.9', 'GCT': '54.874', 'nproc': 1, 'EU': '231343.5', 'FGCT': '0.000', 'S0C': '110720.0', 'jpname': 'Elasticsearch', 'NGCMX': '1107520.0', 'OGCMN': '15669696.0', 'PGCMX': '262144.0', 'YGC': '1399', 'YGCT': '54.874', 'PU': '38273.9', 'PGC': '38336.0', 'OC': '15669696.0', 'PC': '38336.0', 'OGCMX': '15669696.0', 'PGCMN': '21248.0', 'OU': '10927194.0', 'OGC': '15669696.0', 'FGC': '0'}
+{'NGC': '87360.0', 'NGCMN': '87360.0', 'pid': '59156', 'S0U': '0.0', 'EC': '69952.0', 'S1C': '8704.0', 'S1U': '383.5', 'GCT': '29.760', 'nproc': 1, 'EU': '30457.3', 'FGCT': '8.450', 'S0C': '8704.0', 'jpname': 'Elasticsearch', 'NGCMX': '349504.0', 'OGCMN': '174784.0', 'CCSC': '6908.0', 'CCSMX': '1048576.0', 'YGC': '1435', 'YGCT': '21.310', 'MC': '58864.0', 'MCMN': '0.0', 'OC': '174784.0', 'MU': '57196.3', 'OGCMX': '699072.0', 'CCSMN': '0.0', 'CCSU': '6492.3', 'OU': '113186.6', 'MCMX': '1101824.0', 'OGC': '174784.0', 'FGC': '94'} 
 -----
 
 Dumping zabbix stat dictionary
 -----
-{'perm_max': 268435456.0, 'heap_max': 17179869184.0, 'perm_used': 39192473.600000001, 'heap_used': 11426342400.0}
+{'heap_max': 1073741824.0, 'off_heap_meta_capacity': 60276736.0, 'heap_new_max': 357892096.0, 'off_heap_perm_max': 0, 'off_heap_meta_used': 58569011.2, 'heap_old_capacity': 178978816.0, 'heap_used': 147484057.6, 'heap_capacity': 268435456.0, 'off_heap_ccs_max': 1073741824.0, 'off_heap_perm_used': 0, 'off_heap_meta_max': 1128267776.0, 'off_heap_used': 65217126.400000006, 'off_heap_perm_capacity': 0, 'heap_old_max': 715849728.0, 'off_heap_capacity': 67350528.0, 'off_heap_max': 2202009600.0, 'heap_old_used': 115903078.4, 'heap_new_capacity': 89456640.0, 'off_heap_ccs_capacity': 7073792.0, 'off_heap_ccs_used': 6648115.2, 'heap_new_used': 31580979.2} 
 -----
 
 Simulation: the following command would be execucted :
-/usr/bin/zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k custom.proc.java.elasticsearch[perm_max] -o 268435456.0
+/usr/bin/zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k custom.proc.java.elasticsearch[heap_max] -o 1073741824.0 
 
 Simulation: the following command would be execucted :
-/usr/bin/zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k custom.proc.java.elasticsearch[heap_max] -o 17179869184.0
+/usr/bin/zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k custom.proc.java.elasticsearch[off_heap_meta_capacity] -o 60276736.0 
 
 Simulation: the following command would be execucted :
-/usr/bin/zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k custom.proc.java.elasticsearch[perm_used] -o 39192473.6
+/usr/bin/zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k custom.proc.java.elasticsearch[heap_new_max] -o 357892096.0 
 
 Simulation: the following command would be execucted :
-/usr/bin/zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k custom.proc.java.elasticsearch[heap_used] -o 11426342400.0
+/usr/bin/zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k custom.proc.java.elasticsearch[off_heap_perm_max] -o 0 
+
+Simulation: the following command would be execucted :
+/usr/bin/zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k custom.proc.java.elasticsearch[off_heap_meta_used] -o 58569011.2 
+
+Simulation: the following command would be execucted :
+/usr/bin/zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k custom.proc.java.elasticsearch[heap_old_capacity] -o 178978816.0 
+
+Simulation: the following command would be execucted :
+/usr/bin/zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k custom.proc.java.elasticsearch[heap_used] -o 147484057.6 
+
+Simulation: the following command would be execucted :
+/usr/bin/zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k custom.proc.java.elasticsearch[heap_capacity] -o 268435456.0 
+
+Simulation: the following command would be execucted :
+/usr/bin/zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k custom.proc.java.elasticsearch[off_heap_ccs_max] -o 1073741824.0 
+
+Simulation: the following command would be execucted :
+/usr/bin/zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k custom.proc.java.elasticsearch[off_heap_perm_used] -o 0 
+
+Simulation: the following command would be execucted :
+/usr/bin/zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k custom.proc.java.elasticsearch[off_heap_meta_max] -o 1128267776.0 
+
+Simulation: the following command would be execucted :
+/usr/bin/zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k custom.proc.java.elasticsearch[off_heap_used] -o 65217126.4 
+
+Simulation: the following command would be execucted :
+/usr/bin/zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k custom.proc.java.elasticsearch[off_heap_perm_capacity] -o 0 
+
+Simulation: the following command would be execucted :
+/usr/bin/zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k custom.proc.java.elasticsearch[heap_old_max] -o 715849728.0 
+
+Simulation: the following command would be execucted :
+/usr/bin/zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k custom.proc.java.elasticsearch[off_heap_capacity] -o 67350528.0 
+
+Simulation: the following command would be execucted :
+/usr/bin/zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k custom.proc.java.elasticsearch[off_heap_max] -o 2202009600.0 
+
+Simulation: the following command would be execucted :
+/usr/bin/zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k custom.proc.java.elasticsearch[heap_old_used] -o 115903078.4 
+
+Simulation: the following command would be execucted :
+/usr/bin/zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k custom.proc.java.elasticsearch[heap_new_capacity] -o 89456640.0 
+
+Simulation: the following command would be execucted :
+/usr/bin/zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k custom.proc.java.elasticsearch[off_heap_ccs_capacity] -o 7073792.0 
+
+Simulation: the following command would be execucted :
+/usr/bin/zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k custom.proc.java.elasticsearch[off_heap_ccs_used] -o 6648115.2 
+
+Simulation: the following command would be execucted :
+/usr/bin/zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k custom.proc.java.elasticsearch[heap_new_used] -o 31580979.2
 ```
 
 As you can see, setting send_to_zabbix to 0 added debug output, the "all" option also enabled memory reporting. The output is splitted in 4 sections : 
@@ -221,11 +289,28 @@ Change the zabbix item defined above so it include the "all" switch :
 
 Do the same thing for the corresponding trigger.  
 
-You then need to add 4 zabbix trapper items one for each value :
+You then need to add following zabbix trapper items one for each value :
 * Heap Used (heap_used)
+* Heap Capacity (heap_capacity)
 * Heap Max (heap_max)
-* Perm Used (perm_used)
-* Perm Max (perm_max)
+* Heap New Used (heap_new_used)
+* Heap New Capacity (heap_new_capacity)
+* Heap New Max (heap_new_max)
+* Heap Old Used (heap_old_used)
+* Heap Old Capacity (heap_old_capacity)
+* Heap Old Max (heap_old_max)
+* Off-Heap Used (off_heap_used)
+* Off-Heap Capacity (off_heap_capacity)
+* Off-Heap Max (off_heap_max)
+* Off-Heap Perm Used (off_heap_perm_used)
+* Off-Heap Perm Capacity (off_heap_perm_capacity)
+* Off-Heap Perm Max (off_heap_perm_max)
+* Off-Heap Meta Used (off_heap_meta_used)
+* Off-Heap Meta Capacity (off_heap_meta_capacity)
+* Off-Heap Meta Max (off_heap_meta_max)
+* Off-Heap CCS Used (off_heap_ccs_used)
+* Off-Heap CCS Capacity (off_heap_ccs_capacity)
+* Off-Heap CCS Max (off_heap_ccs_max)
 
 This time keys are based on the following convention : 
 ```
@@ -251,7 +336,7 @@ Finally you can create graphs and screens (see [Zabbix template](/zjstat/zabbix 
 
 ## I need more memory stats
 
-Heap and PermGen are not enough ? No problem, you can easily add you own stat with minimal knowledge in python !
+Heap and Off-Heap are not enough ? No problem, you can easily add you own stat with minimal knowledge in python !
 
 zjstat gathers memory values from the jstat command, each time you request memory stats a python dictionary is created with the values return by :
 ```
