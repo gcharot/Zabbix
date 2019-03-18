@@ -72,10 +72,6 @@ class Jprocess:
 		"off_heap_used" : 0,
 		"off_heap_capacity" : 0,
 		"off_heap_max" : 0,
-		"young_gc_count" : 0,
-		"full_gc_count" : 0,
-		"young_gc_time" : 0,
-		"full_gc_time" : 0,
 		}
 
 		
@@ -158,12 +154,6 @@ class Jprocess:
 		self.zdict['heap_used'] = self.zdict['heap_new_used'] + self.zdict['heap_old_used']
 		self.zdict['heap_capacity'] = self.zdict['heap_new_capacity'] + self.zdict['heap_old_capacity']
 		self.zdict['heap_max'] = self.zdict['heap_new_max'] + self.zdict['heap_old_max']
-
-# Put gc stat in zabbix dictionary - No need to compute anything here
-		self.zdict['young_gc_count'] = int(self.pdict['YGC'])
-		self.zdict['full_gc_count'] = int(self.pdict['FGC'])
-		self.zdict['young_gc_time'] = round(float(self.pdict['YGCT']),2)
-		self.zdict['full_gc_time'] = round(float(self.pdict['FGCT']),2)
 
 		if send_to_zabbix == 0: print "Dumping zabbix stat dictionary\n-----\n", self.zdict, "\n-----\n"
 

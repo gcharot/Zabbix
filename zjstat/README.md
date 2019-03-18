@@ -346,7 +346,7 @@ custom.proc.java.elasticsearch[heap_used]
 
 __Caution__ : process_name is the process name as returned by jps __without__ capital letters.
 
-At the end your 5 items should look like :
+At the end your 26 items should look like :
 
 ![alt text](/zjstat/images/zabbix_java_process_items.png  "zjstat items list")
 
