@@ -1,4 +1,4 @@
-Stat# ZJSTAT
+# ZJSTAT
 
 
 zjstat - Return number of java process matching user's input and send stats via zabbix_sender
