@@ -51,10 +51,27 @@ class Jprocess:
 		}
 
 		self.zdict = {		# Contains only data that will be sent to Zabbix
+	    "heap_new_used" : 0,
+		"heap_new_capacity" : 0,
+		"heap_new_max" : 0,
+		"heap_old_used" : 0,
+		"heap_old_capacity" : 0,
+		"heap_old_max" : 0,
 		"heap_used" : 0,
+		"heap_capacity" : 0,
 		"heap_max" : 0,
-		"perm_used" : 0,
-		"perm_max"  : 0,
+		"off_heap_perm_used" : 0,
+		"off_heap_perm_capacity" : 0,
+		"off_heap_perm_max" : 0,
+		"off_heap_meta_used" : 0,
+		"off_heap_meta_capacity" : 0,
+		"off_heap_meta_max" : 0,
+		"off_heap_ccs_used" : 0,
+		"off_heap_ccs_capacity" : 0,
+		"off_heap_ccs_max" : 0,
+		"off_heap_used" : 0,
+		"off_heap_capacity" : 0,
+		"off_heap_max" : 0,
 		}
 
 		
@@ -109,19 +126,34 @@ class Jprocess:
 		if self.pdict['nproc'] == 0:
 			return False
 
-# Put perm gen stat in zabbix dictionary - No need to compute anything here
-	# JAVA 8 uses MU & MC for metaspace
+# Compute off-heap size used/capacity/max = Perm + Meta + CCS
+	# JAVA 8 uses MU & MCMX for metaspace
 		if java_version >= '8':
-			self.zdict['perm_used'] = round(float(self.pdict['MU']) * 1024,2)
-			self.zdict['perm_max'] = round(float(self.pdict['MC']) * 1024,2)
+			self.zdict['off_heap_meta_used'] = round(float(self.pdict['MU']) * 1024,2)
+			self.zdict['off_heap_meta_capacity'] = round(float(self.pdict['MC']) * 1024,2)
+			self.zdict['off_heap_meta_max'] = round(float(self.pdict['MCMX']) * 1024,2)
+			self.zdict['off_heap_ccs_used'] = round(float(self.pdict['CCSU']) * 1024,2)
+			self.zdict['off_heap_ccs_capacity'] = round(float(self.pdict['CCSC']) * 1024,2)
+			self.zdict['off_heap_ccs_max'] = round(float(self.pdict['CCSMX']) * 1024,2)
 	# Prior Java 8 it was PU & PGCMX		
 		else:
-			self.zdict['perm_used'] = round(float(self.pdict['PU']) * 1024,2)
-			self.zdict['perm_max'] = round(float(self.pdict['PGCMX']) * 1024,2)
+			self.zdict['off_heap_perm_used'] = round(float(self.pdict['PU']) * 1024,2)
+			self.zdict['off_heap_perm_max'] = round(float(self.pdict['PGCMX']) * 1024,2)
+	# Off-heap size = Perm + Meta + CCS
+		self.zdict['off_heap_used'] = self.zdict['off_heap_perm_used'] + self.zdict['off_heap_meta_used'] + self.zdict['off_heap_ccs_used']
+		self.zdict['off_heap_capacity'] = self.zdict['off_heap_perm_capacity'] + self.zdict['off_heap_meta_capacity'] + self.zdict['off_heap_ccs_capacity']
+		self.zdict['off_heap_max'] = self.zdict['off_heap_perm_max'] + self.zdict['off_heap_meta_max'] + self.zdict['off_heap_ccs_max']
 
-# Compute heap size used/max = Eden + Old space
-		self.zdict['heap_used'] = round(((float(self.pdict['EU']) + float(self.pdict['OU'])) * 1024),2)
-		self.zdict['heap_max'] = round(((float(self.pdict['NGCMX']) + float(self.pdict['OGCMX'])) * 1024),2)
+# Compute heap size used/capacity/max = Eden + Survivor + Old space
+		self.zdict['heap_new_used'] = round((float(self.pdict['EU']) + float(self.pdict['S0U']) + float(self.pdict['S1U'])) * 1024,2)
+		self.zdict['heap_new_capacity'] = round(float(self.pdict['NGC']) * 1024,2)
+		self.zdict['heap_new_max'] = round(float(self.pdict['NGCMX']) * 1024,2)
+		self.zdict['heap_old_used'] = round(float(self.pdict['OU']) * 1024,2)
+		self.zdict['heap_old_capacity'] = round(float(self.pdict['OGC']) * 1024,2)
+		self.zdict['heap_old_max'] = round(float(self.pdict['OGCMX']) * 1024,2)
+		self.zdict['heap_used'] = self.zdict['heap_new_used'] + self.zdict['heap_old_used']
+		self.zdict['heap_capacity'] = self.zdict['heap_new_capacity'] + self.zdict['heap_old_capacity']
+		self.zdict['heap_max'] = self.zdict['heap_new_max'] + self.zdict['heap_old_max']
 
 		if send_to_zabbix == 0: print "Dumping zabbix stat dictionary\n-----\n", self.zdict, "\n-----\n"
 
