@@ -98,7 +98,7 @@ If everything is fine, reset debug and send_to_zabbix to their original values a
 
 ### Zabbix Template
 
-Import the [Zabbix template](/zapache/zabbix template/zbx_template_apache.xml), this template includes all default values and is ready to use :
+Import the [Zabbix template](</zapache/zabbix template/zbx_template_apache.xml>), this template includes all default values and is ready to use :
 
 * HTTP total requests per second
 
